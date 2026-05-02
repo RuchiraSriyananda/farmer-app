@@ -8,6 +8,9 @@ jobs:
   build:
     runs-on: ubuntu-22.04
 
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -15,12 +18,22 @@ jobs:
     - name: Install system dependencies
       run: |
         sudo apt update
-        sudo apt install -y python3-pip git zip unzip openjdk-17-jdk
+        sudo apt install -y \
+          python3-pip \
+          python3-setuptools \
+          git zip unzip \
+          openjdk-17-jdk \
+          libffi-dev \
+          libssl-dev
 
     - name: Install Python tools
       run: |
         pip install --upgrade pip
         pip install buildozer cython
+
+    - name: Clean previous builds
+      run: |
+        rm -rf .buildozer bin
 
     - name: Build APK
       run: |
